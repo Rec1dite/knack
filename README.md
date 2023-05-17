@@ -1,36 +1,33 @@
 # Knack
 > Knapsack Problem Solver using a Genetic Algorithm and Ant Colony Optimization
 
-<!-- <p align="center">
-<img src="https://media.istockphoto.com/id/1269514456/vector/ants-marching-silhouette-vector-isolated-illustration-ant-line-banner.jpg?s=612x612&w=0&k=20&c=uixlnXU6zkzzPOa_uE1RukxUBTUPDlbV3vvx9JYGKxY=" style="filter: add"/>
-</p> -->
-
 ## Usage
 
 ```bash
+#===== BASIC SETUP =====#
 # To compile + run
 make
 
+#===== SUPPLYING CUSTOM ARGUMENTS =====#
 # To run both algorithms and obtain summary of results
-cd src
-java Main
+java -cp src/ Main
 
 # To display help message
-java Main -h
+java -cp src/ Main -h
 
 # To run specific algorithm only
-java Main -a ga
+java -cp src/ Main -a ga
 # or
-java Main -a aco
+java -cp src/ Main -a aco
 
 # To run in verbose mode
-java Main -va ga
+java -cp src/ Main -va ga
 
 # To set specific population size
-java Main -p 100
+java -cp src/ Main -p 100
 
 # To set specific number of generations/iterations
-java Main -g 100
+java -cp src/ Main -g 100
 ```
 
 ## Report
@@ -79,18 +76,15 @@ After the last iteration, the algorithm returns the best solution path found amo
 #### Table of parameters
 | Parameter             | Genetic Algorithm | Description                           |
 |-----------------------|-------------------|---------------------------------------|
-| **POPULATION_SIZE**   | 100               | Size of population| each generation   |
+| **POPULATION_SIZE**   | 100               | Size of population each generation    |
 | **MAX_GENERATIONS**   | 100               | Limit on the number of generations    |
 
 | Parameter             | Ant Colony Optimization | Description             |
 |-----------------------|-------------------------|-------------------------|
-| **ALPHA**             | 1.1                     |                         |
-| **BETA**              | 1.0                     |                         |
+| **ALPHA**             | 1.2                     | Pheromone importance    |
+| **BETA**              | 1.0                     | Greediness importance   |
 | **NUM_ANTS**          | 100                     | No. of ants per batch   |
 | **MAX_ITERATIONS**    | 100                     | No. of batch iterations |
-
-
-
 
 ### \[4] Results 📊
 With (population size) = 100, and (no. of generations) = 100:
@@ -130,10 +124,7 @@ With (population size) = 100, and (no. of generations) = 100:
 | f3_l-d_kp_4_20      | GA   | 35.0     | 35.0      | 1.69261               |
 |                     | ACO  | 35.0     |           | 6.853273              |
 
-####
-
-### \[5] Performance Comparison 📈
-### \[6] Results Analysis 📝
+### \[5] Performance Comparison 📈 & \[6] Results Analysis 📝
 - **Solution Quality**:
     - Both the GA and ACO were able to find the optimal or very near optimal solutions for all problem instances over the 100 generations.
     - However, GA consistently found the exact optimum, while ACO slightly underperformed in the problem instance f8_l-d_kp_23_10000, suggesting that GA might be more reliable for this specific problem set.

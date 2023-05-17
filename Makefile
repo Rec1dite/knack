@@ -5,3 +5,6 @@ build:
 
 run:
 	java -cp src/ Main
+
+clean:
+	rm src/*.class
