@@ -39,7 +39,7 @@ public class Main {
                 System.out.println("Total item values:\t" + tot);
                 System.out.println("");
 
-                Knapsack knapsack = new Knapsack(data.capacity, data.items);
+                GA_Knapsack knapsack = new GA_Knapsack(data.capacity, data.items);
                 knapsack.geneticAlgorithm();
             }
         }
