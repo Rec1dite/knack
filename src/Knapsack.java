@@ -11,7 +11,33 @@ public class Knapsack {
         this.trinkets = trinkets;
     }
 
-    public void optimize() {}
+    public OptimizationResult optimize() { return null; }
+
+    public class OptimizationResult {
+        Sack sack;
+        float timeTaken;
+
+        OptimizationResult(Sack sack, long timeTaken) {
+            this.sack = sack;
+            this.timeTaken = timeTaken;
+        }
+
+        public Sack getSack() {
+            return this.sack;
+        }
+
+        public float getValue() {
+            if (this.sack == null) {
+                return -1;
+            }
+
+            return this.sack.getValue();
+        }
+
+        public float getTimeTaken() {
+            return this.timeTaken;
+        }
+    }
 
     // A single possible solution instance
     // Acts as the individual in the GA population

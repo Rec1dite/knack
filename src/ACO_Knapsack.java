@@ -10,7 +10,7 @@ public class ACO_Knapsack extends Knapsack {
         super(capacity, trinkets);
     }
 
-    public void optimize() {
+    public OptimizationResult optimize() {
         final int NUM_ANTS = 10; //Number of ants per batch
         final int MAX_ITERATIONS = 10; //Number of batches to dispatch
 
@@ -115,7 +115,10 @@ public class ACO_Knapsack extends Knapsack {
                     ant.getValue() > bestEverAnt.getValue()
                 ){
                     bestEverAnt = new Ant(ant);
-                    // System.out.println((int)(bestEverAnt.getValue()) + " " + bestEverAnt.route);
+
+                    if (Main.verbose) {
+                        System.out.println((int)(bestEverAnt.getValue()) + " " + bestEverAnt.route);
+                    }
                 }
             }
         }
@@ -123,9 +126,13 @@ public class ACO_Knapsack extends Knapsack {
         long endTime = System.nanoTime();
 
         //===== RETURN BEST INDIVIDUAL =====//
-        System.out.println(Main.GREEN + "BEST SOLUTION: " + Main.YELLOW + bestEverAnt + Main.RESET);
-        System.out.println(Main.GREEN + "VALUE:\t" + Main.RED + bestEverAnt.getValue() + Main.RESET);
-        System.out.println(Main.GREEN + "TIME:\t" + Main.YELLOW + (endTime - startTime) + " ns" + Main.RESET);
+        if (Main.verbose) {
+            System.out.println(Main.GREEN + "BEST SOLUTION: " + Main.YELLOW + bestEverAnt + Main.RESET);
+            System.out.println(Main.GREEN + "VALUE:\t" + Main.RED + bestEverAnt.getValue() + Main.RESET);
+            System.out.println(Main.GREEN + "TIME:\t" + Main.YELLOW + (endTime - startTime) + " ns" + Main.RESET);
+        }
+
+        return new OptimizationResult(bestEverAnt.sack, endTime - startTime);
     }
     class Ant {
 

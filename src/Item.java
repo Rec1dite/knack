@@ -25,7 +25,7 @@ public class Item {
 
     @Override
     public String toString() {
-        return "Pair { " +
+        return "Item { " +
                 "weight=" + weight +
                 ", value=" + value +
                 " }";

@@ -9,7 +9,7 @@ public class GA_Knapsack extends Knapsack {
         super(capacity, trinkets);
     }
 
-    public void optimize() {
+    public OptimizationResult optimize() {
         final int POPULATION_SIZE = 10;
         final int MAX_GENERATIONS = 10;
 
@@ -59,16 +59,6 @@ public class GA_Knapsack extends Knapsack {
                 bestEverIndividual = new Sack(bestItemThisRound);
             }
 
-            // print all sacks
-            if (Main.debug) {
-                int x = 0;
-                for (Sack sack : population) {
-                    System.out.println(x + " " + sack);
-                    x++;
-                }
-                System.out.println("");
-            }
-
             //===== CROSSOVER =====//
             // {set union, set intersection}
 
@@ -99,8 +89,12 @@ public class GA_Knapsack extends Knapsack {
         long endTime = System.nanoTime();
 
         //===== RETURN BEST INDIVIDUAL =====//
-        System.out.println(Main.GREEN + "BEST SOLUTION: " + Main.YELLOW + bestEverIndividual + Main.RESET);
-        System.out.println(Main.GREEN + "VALUE:\t" + Main.RED + bestEverIndividual.getValue() + Main.RESET);
-        System.out.println(Main.GREEN + "TIME:\t" + Main.YELLOW + (endTime - startTime) + " ns" + Main.RESET);
+        if (Main.verbose) {
+            System.out.println(Main.GREEN + "BEST SOLUTION: " + Main.YELLOW + bestEverIndividual + Main.RESET);
+            System.out.println(Main.GREEN + "VALUE:\t" + Main.RED + bestEverIndividual.getValue() + Main.RESET);
+            System.out.println(Main.GREEN + "TIME:\t" + Main.YELLOW + (endTime - startTime) + " ns" + Main.RESET);
+        }
+
+        return new OptimizationResult(bestEverIndividual, endTime);
     }
 }

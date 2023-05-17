@@ -3,29 +3,45 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class Main {
-    public static final boolean debug = false;
-    public static final String RED = "\033[0;31m";
-    public static final String BLUE = "\033[0;34m";
-    public static final String GREEN = "\033[0;32m";
-    public static final String YELLOW = "\033[0;33m";
-    public static final String RESET = "\033[0m";
+    static final String RED = "\033[0;31m";
+    static final String BLUE = "\033[0;34m";
+    static final String GREEN = "\033[0;32m";
+    static final String PURPLE = "\033[0;35m";
+    static final String YELLOW = "\033[0;33m";
+    static final String RESET = "\033[0m";
+
+    static boolean verbose = false;
+    static int maxFiles = 100;
+    static Set<Algo> algos = Set.of(Algo.GA, Algo.ACO);
 
     public static void main(String[] args) {
-        String inputFolder = "../knaps";
+        String inputFolder = "./knaps";
+        //===== PARSE ARGUMENTS =====//
+        ArgParser parser = new ArgParser(args);
+        if(!parser.parse()) {
+            return;
+        }
 
+        //===== READ INPUT FILES =====//
         File folder = new File(inputFolder);
         File[] inputs = folder.listFiles();
 
-        final int maxFiles = 100;
+        System.out.println("ALGO\tFILE\t\tVALUE\tEXECUTION TIME");
+        System.out.println("----\t----\t\t-----\t--------------");
+
         int i = 0;
         for (File f : inputs) {
             if (f.isFile()) {
                 i++; if(i > maxFiles) { return; }
 
-                System.out.println("\n=====================================================");
+                if (verbose) {
+                    System.out.println("\n=====================================================");
+                }
                 String filePath = f.getAbsolutePath();
 
                 KnapsackData data = readKnapsackDataFromFile(filePath);
@@ -33,14 +49,44 @@ public class Main {
                 // Print total items values
                 float tot = 0;
                 for (Item item : data.items) {
-                    if (debug) { System.out.println(item); }
                     tot += item.getValue();
                 }
-                System.out.println("Total item values:\t" + tot);
-                System.out.println("");
 
-                Knapsack knapsack = new ACO_Knapsack(data.capacity, data.items);
-                knapsack.optimize();
+                if (verbose) {
+                    System.out.println("Total item values:\t" + tot);
+                    System.out.println("");
+                }
+
+                //===== RUN ALGORITHMS =====//
+                Knapsack.OptimizationResult gaRes = null;
+                Knapsack.OptimizationResult acoRes = null;
+                for (Algo algo : algos) {
+                    switch(algo) {
+                        case GA:
+                            if (verbose) {
+                                System.out.println(PURPLE + "Running GA" + RESET);
+                            }
+                            Knapsack ga = new GA_Knapsack(data.capacity, data.items);
+                            gaRes = ga.optimize();
+                            break;
+
+                        case ACO:
+                            if (verbose) {
+                                System.out.println(PURPLE + "Running ACO" + RESET);
+                            }
+                            Knapsack aco = new ACO_Knapsack(data.capacity, data.items);
+                            acoRes = aco.optimize();
+                            break;
+                    }
+                }
+
+                //===== PRINT RESULTS =====//
+                if (gaRes != null) {
+                    System.out.println(BLUE + "GA\t" + GREEN + f.getName() + "\t" + YELLOW + gaRes.sack.getValue() + RESET + "\t" + gaRes.timeTaken);
+                }
+                if (acoRes != null) {
+                    System.out.println(PURPLE + "ACO\t" + GREEN + f.getName() + "\t" + YELLOW + acoRes.sack.getValue() + RESET + "\t" + acoRes.timeTaken);
+                }
             }
         }
     }
@@ -55,11 +101,13 @@ public class Main {
             String line;
 
             if ((line = br.readLine()) != null) {
-                System.out.println("File: " + BLUE + filePath + RESET);
                 String[] parts = line.split(" ");
 
-                System.out.println("Number of items:\t" + parts[0]);
-                System.out.println("Knapsack Capacity:\t" + parts[1]);
+                if (verbose) {
+                    System.out.println("File: " + BLUE + filePath + RESET);
+                    System.out.println("Number of items:\t" + parts[0]);
+                    System.out.println("Knapsack Capacity:\t" + parts[1]);
+                }
 
                 res.capacity = Integer.parseInt(parts[1]);
             }
@@ -90,5 +138,104 @@ public class Main {
             capacity = 0;
             items = new ArrayList<>();
         }
+    }
+
+    static class ArgParser {
+        String[] args;
+
+        ArgParser(String[] args) {
+            this.args = args;
+        }
+
+        boolean parse() {
+            if (args.length > 0) {
+                for (int i = 0; i < args.length; i++) {
+                    String arg = args[i];
+
+                    // Check valid argument
+                    if (
+                        arg.length() <= 1 ||
+                        arg.charAt(0) != '-' ||
+                        !Character.isLetter(arg.charAt(1))
+                    ){
+                        System.out.println(RED + "Invalid argument: " + arg + RESET);
+                        return false;
+                    }
+
+                    // Loop through flags
+                    for (int c = 1; c < arg.length(); c++) {
+                        switch(arg.charAt(c)) {
+
+                            //===== FLAGS =====//
+                            case 'a': //Use specific algorithm
+                                if(!handleParameterizedFlag(c, i, 'a')) { return false; }
+
+                                String alg = args[i+1];
+                                if (alg.equals("ga")) {
+                                    algos = Set.of(Algo.GA);
+                                }
+                                else if (alg.equals("aco")) {
+                                    algos = Set.of(Algo.ACO);
+                                }
+                                else if (alg.equals("all")) {
+                                    algos = Set.of(Algo.GA, Algo.ACO);
+                                }
+                                else {
+                                    System.out.println(RED + "Unknown algorithm: " + alg + RESET);
+                                    System.out.println(RED + "Options include: ['ga', 'aco', 'all']" + RESET);
+                                    return false;
+                                }
+                                i++;
+
+                                break;
+
+                            case 'v': //Verbose output
+                                verbose = true;
+                                break;
+
+                            case 'n': //Max number of files
+                                if(!handleParameterizedFlag(c, i, 'n')) { return false; }
+
+                                try {
+                                    maxFiles = Integer.parseInt(args[i+1]);
+                                    i++; // Skip parsing the next argument
+                                }
+                                catch (NumberFormatException e) {
+                                    System.out.println(RED + "Failed to parse number argument: " + args[i+1] + RESET);
+                                    return false;
+                                }
+                                break;
+
+                            default:
+                                System.out.println(RED + "Unknown flag: " + arg.charAt(c) + RESET);
+                                return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        boolean handleParameterizedFlag(int c, int i, char flag) {
+            // Check that we're the last flag in the list
+            if (c != args[i].length()-1) {
+                System.out.println(RED + "Flag -" + flag + " must be the last flag in the list to supply an argument" + RESET);
+                return false;
+            }
+
+            // Check that an argument exists
+            if (i+1 >= args.length) {
+                System.out.println(RED + "No argument supplied for the -" + flag + " flag" + RESET);
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    enum Algo {
+        GA,
+        ACO
     }
 }
