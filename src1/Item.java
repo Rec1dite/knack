@@ -1,8 +1,8 @@
-public class Pair {
+public class Item {
     private float weight;
     private float value;
 
-    public Pair(float weight, float value) {
+    public Item(float weight, float value) {
         this.weight = weight;
         this.value = value;
     }
