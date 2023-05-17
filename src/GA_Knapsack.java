@@ -93,6 +93,7 @@ public class GA_Knapsack extends Knapsack {
             System.out.println(Main.GREEN + "BEST SOLUTION: " + Main.YELLOW + bestEverIndividual + Main.RESET);
             System.out.println(Main.GREEN + "VALUE:\t" + Main.RED + bestEverIndividual.getValue() + Main.RESET);
             System.out.println(Main.GREEN + "TIME:\t" + Main.YELLOW + (endTime - startTime) + " ns" + Main.RESET);
+            System.out.println("");
         }
 
         return new OptimizationResult(bestEverIndividual, endTime);

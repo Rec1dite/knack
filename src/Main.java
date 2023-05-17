@@ -3,7 +3,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -31,8 +30,9 @@ public class Main {
         File folder = new File(inputFolder);
         File[] inputs = folder.listFiles();
 
+        System.out.println("RESULTS:");
         System.out.println("ALGO\tFILE\t\tVALUE\tEXECUTION TIME");
-        System.out.println("----\t----\t\t-----\t--------------");
+        System.out.println(RED + "----\t----\t\t-----\t--------------" + RESET);
 
         int i = 0;
         for (File f : inputs) {
@@ -205,6 +205,14 @@ public class Main {
                                     return false;
                                 }
                                 break;
+
+                            case 'h':
+                                System.out.println("Usage: " + BLUE + "java Main [flags]" + RESET);
+                                System.out.println("-a <algo> \t: Use specific algorithm");
+                                System.out.println("-n <num> \t: Set max number of input files");
+                                System.out.println("-v \t\t: Verbose output");
+                                System.out.println("-h \t\t: Print this message");
+                                return false;
 
                             default:
                                 System.out.println(RED + "Unknown flag: " + arg.charAt(c) + RESET);

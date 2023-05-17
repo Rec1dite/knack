@@ -130,6 +130,7 @@ public class ACO_Knapsack extends Knapsack {
             System.out.println(Main.GREEN + "BEST SOLUTION: " + Main.YELLOW + bestEverAnt + Main.RESET);
             System.out.println(Main.GREEN + "VALUE:\t" + Main.RED + bestEverAnt.getValue() + Main.RESET);
             System.out.println(Main.GREEN + "TIME:\t" + Main.YELLOW + (endTime - startTime) + " ns" + Main.RESET);
+            System.out.println("");
         }
 
         return new OptimizationResult(bestEverAnt.sack, endTime - startTime);
