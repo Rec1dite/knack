@@ -5,15 +5,24 @@ import java.util.Map;
 import java.util.Set;
 
 public class ACO_Knapsack extends Knapsack {
+    final int DEFAULT_NUM_ANTS = 100; //Number of ants per batch
+    final int DEFAULT_MAX_ITERATIONS = 100; //Number of batches to dispatch
+    int NUM_ANTS = DEFAULT_NUM_ANTS;
+    int MAX_ITERATIONS = DEFAULT_MAX_ITERATIONS;
 
     ACO_Knapsack(float capacity, List<Item> trinkets) {
         super(capacity, trinkets);
     }
 
-    public OptimizationResult optimize() {
-        final int NUM_ANTS = 10; //Number of ants per batch
-        final int MAX_ITERATIONS = 10; //Number of batches to dispatch
+    public void setNumAnts(int numAnts) {
+        NUM_ANTS = numAnts;
+    }
 
+    public void setMaxIterations(int maxIterations) {
+        MAX_ITERATIONS = maxIterations;
+    }
+
+    public OptimizationResult optimize() {
         final float ALPHA = 1.0f;   // Pheromone importance
         final float BETA = 1.0f;    // Greedy importance
 

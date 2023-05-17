@@ -4,15 +4,24 @@ import java.util.Comparator;
 import java.util.List;
 
 public class GA_Knapsack extends Knapsack {
+    final int DEFAULT_POPULATION_SIZE = 100;
+    final int DEFAULT_MAX_GENERATIONS = 100;
+    int POPULATION_SIZE = DEFAULT_POPULATION_SIZE;
+    int MAX_GENERATIONS = DEFAULT_MAX_GENERATIONS;
 
     GA_Knapsack(float capacity, List<Item> trinkets) {
         super(capacity, trinkets);
     }
 
-    public OptimizationResult optimize() {
-        final int POPULATION_SIZE = 10;
-        final int MAX_GENERATIONS = 10;
+    public void setPopulationSize(int populationSize) {
+        POPULATION_SIZE = populationSize;
+    }
 
+    public void setMaxGenerations(int maxGenerations) {
+        MAX_GENERATIONS = maxGenerations;
+    }
+
+    public OptimizationResult optimize() {
         long startTime = System.nanoTime();
 
         //===== GENERATE INITIAL POPULATION =====//
@@ -96,6 +105,6 @@ public class GA_Knapsack extends Knapsack {
             System.out.println("");
         }
 
-        return new OptimizationResult(bestEverIndividual, endTime);
+        return new OptimizationResult(bestEverIndividual, endTime - startTime);
     }
 }

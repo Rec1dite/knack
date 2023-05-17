@@ -17,6 +17,8 @@ public class Main {
     static boolean verbose = false;
     static int maxFiles = 100;
     static Set<Algo> algos = Set.of(Algo.GA, Algo.ACO);
+    static int popSize = -1;
+    static int maxIter = -1;
 
     public static void main(String[] args) {
         String inputFolder = "./knaps";
@@ -31,7 +33,7 @@ public class Main {
         File[] inputs = folder.listFiles();
 
         System.out.println("RESULTS:");
-        System.out.println("ALGO\tFILE\t\tVALUE\tEXECUTION TIME");
+        System.out.println("ALGO\tFILE\t\tVALUE\tEXECUTION TIME (ms)");
         System.out.println(RED + "----\t----\t\t-----\t--------------" + RESET);
 
         int i = 0;
@@ -66,7 +68,10 @@ public class Main {
                             if (verbose) {
                                 System.out.println(PURPLE + "Running GA" + RESET);
                             }
-                            Knapsack ga = new GA_Knapsack(data.capacity, data.items);
+                            GA_Knapsack ga = new GA_Knapsack(data.capacity, data.items);
+                            if (popSize != -1) { ga.setPopulationSize(popSize); }
+                            if (maxIter != -1) { ga.setMaxGenerations(maxIter); }
+
                             gaRes = ga.optimize();
                             break;
 
@@ -74,7 +79,10 @@ public class Main {
                             if (verbose) {
                                 System.out.println(PURPLE + "Running ACO" + RESET);
                             }
-                            Knapsack aco = new ACO_Knapsack(data.capacity, data.items);
+                            ACO_Knapsack aco = new ACO_Knapsack(data.capacity, data.items);
+                            if (popSize != -1) { aco.setNumAnts(popSize); }
+                            if (maxIter != -1) { aco.setMaxIterations(maxIter); }
+
                             acoRes = aco.optimize();
                             break;
                     }
@@ -82,10 +90,10 @@ public class Main {
 
                 //===== PRINT RESULTS =====//
                 if (gaRes != null) {
-                    System.out.println(BLUE + "GA\t" + GREEN + f.getName() + "\t" + YELLOW + gaRes.sack.getValue() + RESET + "\t" + gaRes.timeTaken);
+                    System.out.println(BLUE + "GA\t" + GREEN + f.getName() + "\t" + YELLOW + gaRes.sack.getValue() + RESET + "\t" + gaRes.timeTaken/1000000.0);
                 }
                 if (acoRes != null) {
-                    System.out.println(PURPLE + "ACO\t" + GREEN + f.getName() + "\t" + YELLOW + acoRes.sack.getValue() + RESET + "\t" + acoRes.timeTaken);
+                    System.out.println(PURPLE + "ACO\t" + GREEN + f.getName() + "\t" + YELLOW + acoRes.sack.getValue() + RESET + "\t" + acoRes.timeTaken/1000000.0);
                 }
             }
         }
@@ -193,6 +201,40 @@ public class Main {
                                 verbose = true;
                                 break;
 
+                            case 'p': //Population size
+                                if(!handleParameterizedFlag(c, i, 'p')) { return false; }
+
+                                try {
+                                    popSize = Integer.parseInt(args[i+1]);
+                                    if (popSize <= 0) {
+                                        System.out.println(RED + "Population must be a positive number" + RESET);
+                                        return false;
+                                    }
+                                    i++; // Skip parsing the next argument
+                                }
+                                catch (NumberFormatException e) {
+                                    System.out.println(RED + "Failed to parse number argument: " + args[i+1] + RESET);
+                                    return false;
+                                }
+                                break;
+
+                            case 'g': //Max no. of generations
+                                if(!handleParameterizedFlag(c, i, 'g')) { return false; }
+
+                                try {
+                                    maxIter = Integer.parseInt(args[i+1]);
+                                    if (maxIter <= 0) {
+                                        System.out.println(RED + "Max. Iterations must be a positive number" + RESET);
+                                        return false;
+                                    }
+                                    i++; // Skip parsing the next argument
+                                }
+                                catch (NumberFormatException e) {
+                                    System.out.println(RED + "Failed to parse number argument: " + args[i+1] + RESET);
+                                    return false;
+                                }
+                                break;
+
                             case 'n': //Max number of files
                                 if(!handleParameterizedFlag(c, i, 'n')) { return false; }
 
@@ -210,6 +252,8 @@ public class Main {
                                 System.out.println("Usage: " + BLUE + "java Main [flags]" + RESET);
                                 System.out.println("-a <algo> \t: Use specific algorithm");
                                 System.out.println("-n <num> \t: Set max number of input files");
+                                System.out.println("-p <num> \t: Set population size");
+                                System.out.println("-g <num> \t: Set max no. of generations");
                                 System.out.println("-v \t\t: Verbose output");
                                 System.out.println("-h \t\t: Print this message");
                                 return false;

@@ -15,7 +15,7 @@ public class Knapsack {
 
     public class OptimizationResult {
         Sack sack;
-        float timeTaken;
+        long timeTaken;
 
         OptimizationResult(Sack sack, long timeTaken) {
             this.sack = sack;
